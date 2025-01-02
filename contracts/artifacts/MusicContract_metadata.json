@@ -16,6 +16,16 @@
 						"internalType": "contract OysterVault",
 						"name": "_oysterVaultContract",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_rightPurchaseValue",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_valueForListening",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -52,6 +62,25 @@
 					{
 						"indexed": true,
 						"internalType": "address",
+						"name": "hearAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "confirm",
+						"type": "bool"
+					}
+				],
+				"name": "musicHeard",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
 						"name": "addressThisMusicContract",
 						"type": "address"
 					},
@@ -63,6 +92,25 @@
 					}
 				],
 				"name": "musicWithSealedRights",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "purchaseAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "activated",
+						"type": "bool"
+					}
+				],
+				"name": "purchaseMade",
 				"type": "event"
 			},
 			{
@@ -160,6 +208,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "buyRightsMusic",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -176,6 +237,19 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "listenMusic",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
@@ -238,7 +312,39 @@
 			},
 			{
 				"inputs": [],
+				"name": "rightPurchaseValueInGwei",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "sealRights",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "sellOysterToken",
 				"outputs": [
 					{
 						"internalType": "bool",
@@ -258,6 +364,32 @@
 					}
 				],
 				"name": "tokensPerAddress",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "valueForListeningInGwei",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "viewBalance",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -291,6 +423,10 @@
 				],
 				"stateMutability": "nonpayable",
 				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
 			}
 		],
 		"devdoc": {
@@ -481,19 +617,19 @@
 			]
 		},
 		"contracts/MusicContract.sol": {
-			"keccak256": "0x56a9982fb060b85ab3c0a2e575ec65936fad14897b5b1bf3b9baa5488f720520",
+			"keccak256": "0x071972a97989c59cacfba7c755731ae611b799db77f6bbeddbe064ceb5f3b744",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c0c1cd11b4148e50df6a72f9c30210dd62c0abdfd7ea9551096d635c9f6cba37",
-				"dweb:/ipfs/QmNoBC2Ah3Qt1giU6HXodCnrLSDJYBuq3Eys5Ec586JH3S"
+				"bzz-raw://c4574c079e02ef8b052363ef9263fca4532c5c9752490b914887054f7aeb7f64",
+				"dweb:/ipfs/QmUCFXMvgxKkKK8aTpCMc4uyDsmEMWKCBAMU8fjGEwAhJL"
 			]
 		},
 		"contracts/OysterToken.sol": {
-			"keccak256": "0x8f1fa2b24b4ac380ef34c731c11e9f0b54ea37fb80715533293051581ea6eccb",
+			"keccak256": "0x96889d70397b8f5c2490e77f478648d78ad3180a9278020abe5e694d99911a24",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f9eaa0850eabd65435b726b3790c976d01875982a61ff334786545ddb574c10e",
-				"dweb:/ipfs/QmVKMp3FZ6ZUbdNgeusrqhzjZnC6GdkkEhDpu69kE7pDXD"
+				"bzz-raw://0a7b3712fcc4b8be79560db41c600b6ebaeb6de1bb398fed31068fc25bad9ed2",
+				"dweb:/ipfs/QmYJQ1JjAScHXJbTTtSXSEHSZAZFdSBz82U8ypQbNX4d5A"
 			]
 		}
 	},

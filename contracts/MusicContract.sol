@@ -50,35 +50,6 @@ contract MusicContract {
 
     receive() external payable {}
 
-    // Função para selar os direitos da musica (impedir modificações)
-    function sealRights() external onlyOwner returns (bool) {
-        require(remainingRightsDivision == 0, "The remaining divisions of rights must be 0 to seal this contract");
-
-        musicContactIsSealed = true;
-        emit musicWithSealedRights(address(this), true);
-        return true;
-    }
-
-    // Função para remover um dono de direito
-    function removeRightHolder(address _address) internal {
-        uint256 index = findIndex(_address);
-
-        rightHolders[index] = rightHolders[rightHolders.length - 1];
-
-        rightHolders.pop();
-    }
-
-    // Função para encontrar o índice de um endereço no array rightHolders
-    function findIndex(address _address) internal view returns (uint256) {
-        for (uint256 i = 0; i < rightHolders.length; i++) {
-            if (rightHolders[i] == _address) {
-                return i;
-            }
-        }
-
-        return rightHolders.length;
-    }
-
     // Função para atribuir direitos da musica a um endereço
     function assignRights(address addressRight, uint8 percentageOfRights) external onlyOwner returns (bool) {
         require(!musicContactIsSealed, "The contract is already sealed, no modification of rights can be made");
@@ -113,6 +84,35 @@ contract MusicContract {
         emit withdrawalRight(addressRight, address(this), percentageOfRights);
         return true;
     }
+    
+    // Função para remover um dono de direito
+    function removeRightHolder(address _address) internal {
+        uint256 index = findIndex(_address);
+
+        rightHolders[index] = rightHolders[rightHolders.length - 1];
+
+        rightHolders.pop();
+    }
+
+    // Função para encontrar o índice de um endereço no array rightHolders
+    function findIndex(address _address) internal view returns (uint256) {
+        for (uint256 i = 0; i < rightHolders.length; i++) {
+            if (rightHolders[i] == _address) {
+                return i;
+            }
+        }
+
+        return rightHolders.length;
+    }
+
+    // Função para selar os direitos da musica (impedir modificações)
+    function sealRights() external onlyOwner returns (bool) {
+        require(remainingRightsDivision == 0, "The remaining divisions of rights must be 0 to seal this contract");
+
+        musicContactIsSealed = true;
+        emit musicWithSealedRights(address(this), true);
+        return true;
+    }
 
     // Função para comprar 100 OysterTokens
     function buy100OysterToken() external payable isSealed returns (bool) {
@@ -128,16 +128,9 @@ contract MusicContract {
         return true;
     }  
 
-    // Função para vender Oyster Token
-    function sellOysterToken(uint256 amount) external isSealed returns (bool) {
-        require(divisionOfRights[msg.sender] != 0, "This function cannot be called by anyone who does not have rights to the song");
-        require(amount > 0, "Number of tokens for requested transfer must be greater than 0");
-        require(tokensPerAddress[msg.sender] >= amount, "Number of tokens unavailable");
-
-        oysterTokenContract.sellOysterToken(msg.sender, amount);
-        tokensPerAddress[msg.sender] -= amount;
-        balanceTokens -= amount;
-
+    // Função para aprovar o OysterVault a transferir tokens
+    function approveVaultTransfer(uint256 amount) internal returns (bool) {
+        oysterTokenContract.approve(address(oysterVaultContract), amount);
         return true;
     }
 
@@ -152,9 +145,16 @@ contract MusicContract {
         return true;
     }
 
-    // Função para aprovar o OysterVault a transferir tokens
-    function approveVaultTransfer(uint256 amount) internal returns (bool) {
-        oysterTokenContract.approve(address(oysterVaultContract), amount);
+    // Função para vender Oyster Token
+    function sellOysterToken(uint256 amount) external isSealed returns (bool) {
+        require(divisionOfRights[msg.sender] != 0, "This function cannot be called by anyone who does not have rights to the song");
+        require(amount > 0, "Number of tokens for requested transfer must be greater than 0");
+        require(tokensPerAddress[msg.sender] >= amount, "Number of tokens unavailable");
+
+        oysterTokenContract.sellOysterToken(msg.sender, amount);
+        tokensPerAddress[msg.sender] -= amount;
+        balanceTokens -= amount;
+
         return true;
     }
 
