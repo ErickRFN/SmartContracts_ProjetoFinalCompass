@@ -119,7 +119,6 @@ contract OysterVault is Ownable {
         return true;
     }
 
-    
     function receiveTokens(address musicContract, uint256 amount) external onlyOysterToken returns (bool) {
         bool success = IERC20(oysterToken).transferFrom(musicContract, address(this), amount);
 

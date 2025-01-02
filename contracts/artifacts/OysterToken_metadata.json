@@ -1122,11 +1122,11 @@
 			]
 		},
 		"contracts/OysterToken.sol": {
-			"keccak256": "0x96889d70397b8f5c2490e77f478648d78ad3180a9278020abe5e694d99911a24",
+			"keccak256": "0x024990733666c5144fbcf30f498e6dd5e9590aded3e2ec2af23bff772192ec65",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0a7b3712fcc4b8be79560db41c600b6ebaeb6de1bb398fed31068fc25bad9ed2",
-				"dweb:/ipfs/QmYJQ1JjAScHXJbTTtSXSEHSZAZFdSBz82U8ypQbNX4d5A"
+				"bzz-raw://d74a900c105b33abd894e6b01b4bc0d8cc423de0e73456627adcb79bd32795b0",
+				"dweb:/ipfs/QmXi99EkydGdxQK2R3GDj35mnumEYs9NVqmLvfutS57DmL"
 			]
 		}
 	},

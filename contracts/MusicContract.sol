@@ -71,8 +71,8 @@ contract MusicContract {
     // Função para retirar direitos da musica de um endereço
     function withdrawRights(address addressRight, uint8 percentageOfRights) external onlyOwner returns (bool) {
         require(!musicContactIsSealed, "The contract is already sealed, no modification of rights can be made");
-        require(divisionOfRights[addressRight] > 0, "No rights have been defined for this address");
-        require(divisionOfRights[addressRight] <= percentageOfRights, "It is not possible to remove more rights than this address has");
+        require(divisionOfRights[addressRight] != 0, "No rights have been defined for this address");
+        require(divisionOfRights[addressRight] >= percentageOfRights, "It is not possible to remove more rights than this address has");
 
         divisionOfRights[addressRight] -= percentageOfRights;
         remainingRightsDivision += percentageOfRights;
