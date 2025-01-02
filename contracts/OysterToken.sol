@@ -10,7 +10,8 @@ contract OysterToken is ERC20, Ownable, ERC20Permit {
     mapping(address => bool) public validMusicContracts;
 
     event validatedMusicContract(address indexed _address, bool valid);
-    event WeiRefunded(address indexed to, uint256 gweiAmount);
+    event WeiRefunded(address indexed to, uint256 weiAmount);
+    event transferViaTokenSale(address indexed to, uint256 weiAmount);
 
     modifier onlyValidMusicContract() {
         require(validMusicContracts[msg.sender], "This function can only be called by the valid MusicContract address");
@@ -25,8 +26,8 @@ contract OysterToken is ERC20, Ownable, ERC20Permit {
 
     // Função para configurar o endereço do Vault após a implantação
     function setVault(OysterVault _vault) external onlyOwner {
-        require(address(vault) == address(0), "Vault already set");
-        require(address(vault) != address(0), "Invalid vault address");
+        require(address(_vault) != address(0), "Invalid vault address");  // Verificar se o novo endereço do vault é válido
+        require(address(vault) == address(0), "Vault already set");        // Verificar se o vault já foi configurado
         vault = _vault;
     }
 
@@ -44,26 +45,47 @@ contract OysterToken is ERC20, Ownable, ERC20Permit {
         return true;
     }
 
-    // Função de comprar 100 tokens para o contrato de musica
+    // Função de comprar 100 tokens para o contrato de música
     function buy100OSTToMusicContract() external payable onlyValidMusicContract returns (bool) {
-        require(msg.value >= 5200000, "Insufficient Wei sent to buy tokens");
-
+        uint256 businessRateWei = 200_000 * 1e9; 
         uint256 tokensToBuy = 100;
-        uint256 gweiRequired = 5000000;
-        uint256 remainingWei = msg.value - gweiRequired;
+        uint256 gweiPerToken = 50_000; 
 
+        uint256 weiRequired = tokensToBuy * gweiPerToken * 1e9 + businessRateWei;
+
+        require(msg.value >= weiRequired, "Insufficient Wei sent to buy tokens");
+
+        uint256 remainingWei = msg.value - weiRequired;
+
+        // Garante que há tokens suficientes no vault antes de continuar
         require(vault.viewTokensVault() >= tokensToBuy, "Not enough tokens in OysterToken contract");
 
+        // Transfere o troco antes de realizar outras operações externas
+        if (remainingWei > 0) {
+            (bool success, ) = payable(msg.sender).call{value: remainingWei}("");
+            require(success, "Failed to send remaining Ether");
+        }
+
+        // Garante a transferência de tokens
         vault.sendToken(msg.sender, tokensToBuy);
 
-        uint256 remainingEther = remainingWei / 1e18;
-        payable(msg.sender).transfer(remainingEther);
-
-        emit WeiRefunded(msg.sender, msg.value);
+        emit WeiRefunded(msg.sender, remainingWei);
         return true;
     }
 
 
+    // Função para vender tokens
+    function sellOysterToken(address holder, uint256 amount) external payable onlyValidMusicContract returns (bool) {
+        require(amount > 0, "Amount must be greater than zero");
+
+        vault.receiveTokens(msg.sender, amount);
+        uint256 tokenValueInWei = 50000 * 1e9;
+        uint256 amountTransfer = tokenValueInWei * amount;
+        payable(holder).transfer(amountTransfer);
+
+        emit transferViaTokenSale(holder, amountTransfer);
+        return true;
+    }
 
 }
 
@@ -71,6 +93,7 @@ contract OysterVault is Ownable {
     IERC20 public oysterToken;
 
     event TokensDistributed(address indexed to, uint256 amount);
+    event TokensRecieved(address indexed from, uint256 amount);
 
     modifier onlyOysterToken() {
         require(msg.sender == address(oysterToken), "This function can only be called by the oysterToken address");
@@ -81,18 +104,28 @@ contract OysterVault is Ownable {
         oysterToken = _oysterToken;
     }
 
-    function sendToken(address to, uint256 amount) external onlyOysterToken returns (bool) {
+    function sendToken(address musicContract, uint256 amount) external onlyOysterToken returns (bool) {
         require(amount > 0, "Amount must be greater than zero");
         require(
             oysterToken.balanceOf(address(this)) >= amount,
             "Vault does not have enough tokens"
         );
         require(
-            oysterToken.transfer(to, amount),
+            oysterToken.transfer(musicContract, amount),
             "Token transfer failed"
         );
 
-        emit TokensDistributed(to, amount);
+        emit TokensDistributed(musicContract, amount);
+        return true;
+    }
+
+    
+    function receiveTokens(address musicContract, uint256 amount) external onlyOysterToken returns (bool) {
+        bool success = IERC20(oysterToken).transferFrom(musicContract, address(this), amount);
+
+        require(success, "Token transfer failed");
+
+        emit TokensRecieved(musicContract, amount);
         return true;
     }
 

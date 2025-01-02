@@ -82,6 +82,25 @@
 				"type": "event"
 			},
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "TokensRecieved",
+				"type": "event"
+			},
+			{
 				"inputs": [],
 				"name": "owner",
 				"outputs": [
@@ -108,6 +127,30 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "musicContract",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "receiveTokens",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "renounceOwnership",
 				"outputs": [],
@@ -118,7 +161,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "to",
+						"name": "musicContract",
 						"type": "address"
 					},
 					{
@@ -375,11 +418,11 @@
 			]
 		},
 		"contracts/OysterToken.sol": {
-			"keccak256": "0x7cd3e430ef57ab9f3204041b38963f60846db2ba5b8b89cfae21e64a71e77e73",
+			"keccak256": "0x96889d70397b8f5c2490e77f478648d78ad3180a9278020abe5e694d99911a24",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8452f0b8c978180fbb721b8d3779155a517bf57d5b479a4bd96b8a8db13f465f",
-				"dweb:/ipfs/QmRrTWoXjNPJMG5b3ZuXAMnZwSeTPgMfgiEGD2MZ1nQmz4"
+				"bzz-raw://0a7b3712fcc4b8be79560db41c600b6ebaeb6de1bb398fed31068fc25bad9ed2",
+				"dweb:/ipfs/QmYJQ1JjAScHXJbTTtSXSEHSZAZFdSBz82U8ypQbNX4d5A"
 			]
 		}
 	},
